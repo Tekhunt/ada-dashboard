@@ -1,4 +1,4 @@
-// src/components/Dashboard.jsx - FIXED
+// src/components/Dashboard.jsx - COMPLETE FIXED VERSION
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
@@ -7,23 +7,21 @@ import { XCircle, Target, Search, Folder, TrendingUp } from "lucide-react";
 import { HiExclamationTriangle, HiCheckCircle, HiChartBar } from "react-icons/hi2";
 
 function Dashboard() {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentAnalyses, setRecentAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const { user, logout } = useAuth();
-
-  // 🔍 Debug - log user object
-  useEffect(() => {
-  }, [user]);
+  
+  // ✅ State for custom counts
+  const [compliantCount, setCompliantCount] = useState(0);
+  const [partialCount, setPartialCount] = useState(0);
+  const [nonCompliantCount, setNonCompliantCount] = useState(0);
 
   const userData = Array.isArray(user) ? user[0] : user;
 
   const displayName = userData?.first_name 
     ? `${userData.first_name}`.trim()
     : userData?.email?.split('@')[0] || 'User';
-
 
   useEffect(() => {
     loadDashboardData();
@@ -35,8 +33,33 @@ function Dashboard() {
         api.getStatistics(),
         api.getAnalyses(),
       ]);
+      
+      console.log('📊 Analyses loaded:', analysesData);
+      
+      // ✅ Calculate counts from analysesData
+      const compliant = analysesData.filter(a => {
+        const status = a.compliance_status?.toLowerCase() || '';
+        return status.includes('compliant') && !status.includes('partial');
+      }).length;
+      
+      const partial = analysesData.filter(a => 
+        a.compliance_status?.toLowerCase().includes('partial')
+      ).length;
+      
+      const nonCompliant = analysesData.filter(a => {
+        const status = a.compliance_status?.toLowerCase() || '';
+        return status.includes('non') || 
+               status === 'unknown' || 
+               !a.compliance_status;
+      }).length;
+      
+      // ✅ Set all state
       setStats(statsData);
       setRecentAnalyses(analysesData.slice(0, 5));
+      setCompliantCount(compliant);
+      setPartialCount(partial);
+      setNonCompliantCount(nonCompliant);
+      
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
@@ -45,29 +68,31 @@ function Dashboard() {
   };
 
   const getComplianceClasses = (status) => {
-    switch (status) {
-      case 'compliant':
-        return 'text-success-700 bg-success-50 border-success-200';
-      case 'partial':
-        return 'text-warning-700 bg-warning-50 border-warning-200';
-      case 'non_compliant':
-        return 'text-danger-700 bg-danger-50 border-danger-200';
-      default:
-        return 'text-gray-700 bg-gray-50 border-gray-200';
+    const statusLower = status?.toLowerCase() || '';
+    if (statusLower.includes('compliant') && !statusLower.includes('partial')) {
+      return 'text-success-700 bg-success-50 border-success-200';
     }
+    if (statusLower.includes('partial')) {
+      return 'text-warning-700 bg-warning-50 border-warning-200';
+    }
+    if (statusLower.includes('non') || statusLower === 'unknown') {
+      return 'text-danger-700 bg-danger-50 border-danger-200';
+    }
+    return 'text-gray-700 bg-gray-50 border-gray-200';
   };
 
   const getStatusIcon = (status) => {
-    switch (status) {
-      case 'compliant': 
-        return <HiCheckCircle className="w-5 h-5" />;
-      case 'partial': 
-        return <HiExclamationTriangle className="w-5 h-5" />;
-      case 'non_compliant': 
-        return <XCircle className="w-5 h-5" />;
-      default: 
-        return null;
+    const statusLower = status?.toLowerCase() || '';
+    if (statusLower.includes('compliant') && !statusLower.includes('partial')) {
+      return <HiCheckCircle className="w-5 h-5" />;
     }
+    if (statusLower.includes('partial')) {
+      return <HiExclamationTriangle className="w-5 h-5" />;
+    }
+    if (statusLower.includes('non') || statusLower === 'unknown') {
+      return <XCircle className="w-5 h-5" />;
+    }
+    return null;
   };
 
   if (loading) {
@@ -87,16 +112,15 @@ function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, {displayName}
+            Welcome back, {displayName}!
           </h1>
           <p className="text-gray-700">
             Building a more accessible Ontario— one analysis at a time.
           </p>
-          <p className="text-gray-700">
-            Here’s your washroom compliance overview.
+          <p className="text-gray-600">
+            Here's your washroom compliance overview.
           </p>
         </div>
-
 
         {/* Statistics Cards */}
         {stats && (
@@ -120,7 +144,7 @@ function Dashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Compliant</p>
-                    <p className="text-3xl font-bold text-success-600">{stats.compliant}</p>
+                    <p className="text-3xl font-bold text-success-600">{compliantCount}</p>
                   </div>
                   <div className="bg-success-100 rounded-full p-4">
                     <HiCheckCircle className="w-8 h-8 text-success-600" />
@@ -133,7 +157,7 @@ function Dashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Partial</p>
-                    <p className="text-3xl font-bold text-warning-600">{stats.partial}</p>
+                    <p className="text-3xl font-bold text-warning-600">{partialCount}</p>
                   </div>
                   <div className="bg-warning-100 rounded-full p-4">
                     <HiExclamationTriangle className="w-8 h-8 text-warning-600" />
@@ -146,7 +170,7 @@ function Dashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Non-Compliant</p>
-                    <p className="text-3xl font-bold text-danger-600">{stats.non_compliant}</p>
+                    <p className="text-3xl font-bold text-danger-600">{nonCompliantCount}</p>
                   </div>
                   <div className="bg-danger-100 rounded-full p-4">
                     <XCircle className="w-8 h-8 text-danger-600" />
@@ -162,7 +186,7 @@ function Dashboard() {
                   <p className="text-gray-300 text-sm font-medium mb-1">Average Compliance Score</p>
                   <p className="text-5xl font-bold">
                     {stats.average_compliance_score != null 
-                      ? `${Math.round(stats.average_compliance_score)}%` 
+                      ? `${Math.round(stats.average_compliance_score)}%`
                       : 'N/A'}
                   </p>
                 </div>
@@ -188,9 +212,9 @@ function Dashboard() {
           {/* New Analysis */}
           <Link
             to="/analyze"
-            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-200 transform hover:-translate-y-1 group"
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg group cursor-pointer"
           >
-            <div className="mb-3">
+            <div className="mb-3 ">
               <Search className="w-12 h-12 text-primary-500" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">New Analysis</h3>
@@ -199,10 +223,10 @@ function Dashboard() {
             </p>
           </Link>
 
-          {/* View History - Scrolls to recent analyses section */}
+          {/* View History */}
           <a
             href="#recent-analyses"
-            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-200 transform hover:-translate-y-1 group"
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg group cursor-pointer"
           >
             <div className="mb-3">
               <Folder className="w-12 h-12 text-primary-500" />
@@ -213,14 +237,14 @@ function Dashboard() {
             </p>
           </a>
 
+          {/* Statistics */}
           <Link
             to="/statistics"
-            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-200 transform hover:-translate-y-1 group"
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg group cursor-pointer"
           >
-             <div className="mb-3">
+            <div className="mb-3">
               <TrendingUp className="w-12 h-12 text-primary-500" />
             </div>
-
             <h3 className="text-xl font-bold text-gray-900 mb-2">Statistics</h3>
             <p className="text-gray-600 text-sm">
               View detailed analytics and trends
@@ -287,7 +311,7 @@ function Dashboard() {
                         )}`}
                       >
                         {getStatusIcon(analysis.compliance_status)}
-                        <span>{analysis.compliance_status.replace('_', ' ')}</span>
+                        <span>{analysis.compliance_status}</span>
                       </span>
                       <p className="text-2xl font-bold text-gray-900 mt-2">
                         {analysis.compliance_score}%

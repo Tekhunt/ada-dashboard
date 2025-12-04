@@ -14,7 +14,15 @@ function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <span className="text-4xl">
-                <img src={ontarioLogo} alt="Ontario AODA Analyzer Logo" className="w-10 h-10" />
+                <img 
+                    src={ontarioLogo} 
+                    alt="Ontario Logo" 
+                    className="h-14 w-14 object-contain rounded-full"
+                    onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'block';
+                    }}
+                    />
               </span>
               <h3 className="text-2xl font-bold">Ontario AODA Analyzer</h3>
             </div>
