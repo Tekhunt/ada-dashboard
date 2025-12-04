@@ -2,6 +2,9 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from './services/api';
+import { HiChartBar } from "react-icons/hi2";
+import { Target } from "lucide-react";
+import { Crosshair } from "lucide-react";
 
 const AnalysisPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -238,7 +241,7 @@ const AnalysisPage = () => {
                 { icon: '🎨', label: 'Annotating Image' },
                 { icon: '📏', label: 'Measuring Dimensions' },
                 { icon: '✅', label: 'Checking Compliance' },
-                { icon: '📊', label: 'Generating Report' },
+                { icon: '<HiChartBar className="text-3xl text-blue-500" />', label: 'Generating Report' },
               ].map((step, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-4">
                   <div className="text-3xl mb-2">{step.icon}</div>
@@ -297,7 +300,8 @@ const AnalysisPage = () => {
                     <p className="text-2xl font-bold text-gray-900">{result.compliance_score}%</p>
                   </div>
                   <div className="bg-primary-100 rounded-full p-3">
-                    <span className="text-3xl">📊</span>
+                    <span className="text-3xl"><HiChartBar className="text-3xl text-blue-500" />
+</span>
                   </div>
                 </div>
               </div>
@@ -309,7 +313,7 @@ const AnalysisPage = () => {
                     <p className="text-2xl font-bold text-gray-900">{result.total_objects}</p>
                   </div>
                   <div className="bg-purple-100 rounded-full p-3">
-                    <span className="text-3xl">🎯</span>
+                    <span className="text-3xl"><Crosshair className="w-10 h-10 text-red-500" /></span>
                   </div>
                 </div>
               </div>
@@ -474,7 +478,8 @@ const AnalysisPage = () => {
                   onClick={() => navigate(`/analysis/${result.id}`)}
                   className="flex-1 bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
                 >
-                  📊 View Full Details
+                  <HiChartBar className="text-3xl text-blue-500" />
+ View Full Details
                 </button>
               )}
             </div>

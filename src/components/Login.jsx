@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { HiChartBar } from "react-icons/hi2";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-500 to-purple-600 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-800 via-slate-700 to-gray-800 px-4 py-12">
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo/Header */}
         <div className="text-center mb-8">
@@ -141,7 +142,8 @@ const Login = () => {
               <span>AI-Powered</span>
             </span>
             <span className="flex items-center space-x-1">
-              <span>📊</span>
+              <span><HiChartBar className="text-3xl text-blue-500" />
+</span>
               <span>Accurate</span>
             </span>
             <span className="flex items-center space-x-1">

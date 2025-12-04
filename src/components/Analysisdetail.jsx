@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from './services/api';
+import { HiChartBar } from "react-icons/hi2";
+import { Target } from "lucide-react";
+import { Crosshair } from "lucide-react";
+
 
 const AnalysisDetail = () => {
   const { id } = useParams();
@@ -26,14 +30,18 @@ const AnalysisDetail = () => {
     }
   };
 
+
   const handleDelete = async () => {
     setDeleting(true);
     try {
+      
       await api.deleteAnalysis(id);
-      navigate('/history');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error deleting:', error);
       setDeleting(false);
+      // ✅ Show error to user
+      alert(`Failed to delete: ${error.message}`);
     }
   };
 
@@ -77,7 +85,7 @@ const AnalysisDetail = () => {
           <div className="text-6xl mb-4">❌</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Analysis not found</h2>
           <Link
-            to="/history"
+            to="/dashboard"
             className="inline-block bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
           >
             Back to History
@@ -93,7 +101,7 @@ const AnalysisDetail = () => {
         {/* Header */}
         <div className="mb-8">
           <Link
-            to="/history"
+            to="/dashboard"
             className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium mb-4 transition duration-200"
           >
             <span className="mr-2">←</span>
@@ -153,7 +161,7 @@ const AnalysisDetail = () => {
 
         {/* Compliance Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary-500">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium mb-1">Status</p>
@@ -171,31 +179,33 @@ const AnalysisDetail = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary-500">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium mb-1">Compliance Score</p>
                 <p className="text-3xl font-bold text-gray-900">{analysis.compliance_score}%</p>
               </div>
               <div className="bg-primary-100 rounded-full p-4">
-                <span className="text-3xl">📊</span>
+                <span className="text-3xl"><HiChartBar className="text-3xl text-blue-500" />
+</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+          <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium mb-1">Objects Detected</p>
                 <p className="text-3xl font-bold text-gray-900">{analysis.total_objects}</p>
               </div>
               <div className="bg-purple-100 rounded-full p-4">
-                <span className="text-3xl">🎯</span>
+                <span className="text-3xl"><Crosshair className="w-10 h-10 text-red-500" /></span>
+                
               </div>
             </div>
           </div>
 
-          <div className={`bg-white rounded-xl shadow-md p-6 border-l-4 ${
+          <div className={`bg-white rounded-xl shadow-md p-6 ${
             analysis.critical_issues_count > 0 ? 'border-danger-500' : 'border-success-500'
           }`}>
             <div className="flex items-center justify-between">
@@ -227,7 +237,8 @@ const AnalysisDetail = () => {
             </h2>
             <div className="text-center">
               <img
-                src={analysis.annotated_image_url}
+                // src={analysis.annotated_image_url}
+                src={`${import.meta.env.VITE_API_URL}${analysis.annotated_image_url}`}
                 alt="Annotated floor plan"
                 className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
               />
@@ -474,7 +485,7 @@ const AnalysisDetail = () => {
             🔍 New Analysis
           </Link>
           <Link
-            to="/history"
+            to="/dashboard"
             className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-4 px-6 rounded-lg transition duration-200 transform hover:scale-105 text-center"
           >
             📁 View History

@@ -8,6 +8,8 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import AnalysisPage from './components/AnalysisPage';
 import AnalysisDetail from './components/Analysisdetail';
+import Footer from './components/Footer';
+import Statistics from './components/Statistics';
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -97,10 +99,20 @@ function App() {
                 }
               />
 
+              <Route
+                path="/statistics"
+                element={
+                  <ProtectedRoute>
+                    <Statistics />
+                  </ProtectedRoute>
+                }
+              />
+
               {/* Default Route */}
               <Route path="/" element={<Navigate to="/dashboard" />} />
             </Routes>
           </main>
+           <Footer />
         </div>
       </AuthProvider>
     </Router>

@@ -1,31 +1,53 @@
-// src/components/Navbar.jsx - Tailwind Version
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-
+import ontarioLogo from '../assets/ontario-logo.jpg';
 
 function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // 🔍 Debug - log user object
+  useEffect(() => {
+  }, [user]);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  const userData = Array.isArray(user) ? user[0] : user;
+
+  const displayName = userData?.first_name 
+    ? `${userData.first_name} ${userData.last_name || ''}`.trim()
+    : userData?.email?.split('@')[0] || 'User';
+
   return (
-    <nav className="bg-gradient-to-r from-primary-600 to-purple-600 shadow-lg sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center space-x-3 group">
-            <span className="text-4xl transform group-hover:scale-110 transition-transform duration-200">
+            {/* <span className="text-4xl transform group-hover:scale-110 transition-transform duration-200">
               🏛️
-            </span>
+            </span> */}
+            <div className="transform group-hover:scale-110 transition-transform duration-200">
+              <img 
+                src={ontarioLogo} 
+                alt="Ontario Logo" 
+                className="h-14 w-14 object-contain rounded-full"
+                onError={(e) => {
+                  // Fallback to emoji if image fails to load
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              {/* <span className="text-4xl hidden">🏛️</span> */}
+            </div>
             <div className="hidden sm:block">
               <span className="text-white text-xl font-bold">Ontario ADA</span>
-              <span className="text-primary-100 text-sm block">Compliance Analyzer</span>
+              <span className="text-gray-300 text-sm block">Compliance Analyzer</span>
             </div>
           </Link>
 
@@ -36,23 +58,34 @@ function Navbar() {
                 to="/dashboard"
                 className="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition duration-200 font-medium"
               >
-                📊 Dashboard
+                Dashboard
               </Link>
               <Link
                 to="/analyze"
                 className="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition duration-200 font-medium"
               >
-                🔍 Analyze
+                Analyze
               </Link>
-              
+
+              <Link
+                to="/statistics"
+                className="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition duration-200 font-medium"
+              >
+                Statistics
+              </Link>
+                            
               {/* User Menu */}
               <div className="flex items-center space-x-3 border-l border-white/20 pl-4 ml-4">
                 <div className="text-right hidden lg:block">
-                  <p className="text-white text-sm font-medium">{user.email}</p>
-                  <p className="text-primary-100 text-xs">{user.email}</p>
+                  <p className="text-white text-sm font-medium">
+                    {displayName}
+                  </p>
+                  <p className="text-gray-300 text-xs">
+                    {userData?.email || 'No email'}
+                  </p>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
-                  {user.email?.charAt(0).toUpperCase()}
+                  {displayName.charAt(0).toUpperCase()}
                 </div>
                 <button
                   onClick={handleLogout}
@@ -91,26 +124,35 @@ function Navbar() {
       </div>
 
       {/* Mobile Menu */}
+      
       {user && mobileMenuOpen && (
-        <div className="md:hidden bg-primary-700 border-t border-white/10 animate-fade-in">
+        <div className="block md:hidden bg-slate-700 border-t border-white/10 animate-fade-in">
           <div className="px-4 py-3 space-y-2">
             <Link
               to="/dashboard"
               className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition duration-200"
               onClick={() => setMobileMenuOpen(false)}
             >
-              📊 Dashboard
+              Dashboard
             </Link>
             <Link
               to="/analyze"
               className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition duration-200"
               onClick={() => setMobileMenuOpen(false)}
             >
-              🔍 Analyze
+              Analyze
             </Link>
+
+            <Link
+                to="/statistics"
+                className="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition duration-200 font-medium"
+              >
+                Statistics
+              </Link>
+
             <div className="border-t border-white/10 pt-2 mt-2">
-              <p className="text-white px-4 py-2 text-sm font-medium">{user.email}</p>
-              <p className="text-primary-100 px-4 text-xs mb-2">{user.email}</p>
+              <p className="text-white px-4 py-2 text-sm font-medium">{userData?.first_name}</p>
+              <p className="text-gray-300 px-4 text-xs mb-2">{userData?.email || 'No email'}</p>
               <button
                 onClick={() => {
                   handleLogout();
@@ -129,3 +171,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

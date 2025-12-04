@@ -1,8 +1,10 @@
-// src/components/Dashboard/Dashboard.jsx - Tailwind Version (Complete)
+// src/components/Dashboard.jsx - FIXED
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import api from './services/api';
+import { XCircle, Target, Search, Folder, TrendingUp } from "lucide-react";
+import { HiExclamationTriangle, HiCheckCircle, HiChartBar } from "react-icons/hi2";
 
 function Dashboard() {
   const { user } = useAuth();
@@ -44,10 +46,14 @@ function Dashboard() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'compliant': return '✅';
-      case 'partial': return '⚠️';
-      case 'non_compliant': return '❌';
-      default: return '❓';
+      case 'compliant': 
+        return <HiCheckCircle className="w-5 h-5" />;
+      case 'partial': 
+        return <HiExclamationTriangle className="w-5 h-5" />;
+      case 'non_compliant': 
+        return <XCircle className="w-5 h-5" />;
+      default: 
+        return null;
     }
   };
 
@@ -80,85 +86,95 @@ function Dashboard() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Analyses */}
-              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary-500 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
+              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Total Analyses</p>
                     <p className="text-3xl font-bold text-gray-900">{stats.total_analyses}</p>
                   </div>
                   <div className="bg-primary-100 rounded-full p-4">
-                    <span className="text-3xl">📊</span>
+                    <HiChartBar className="w-8 h-8 text-primary-600" />
                   </div>
                 </div>
               </div>
 
               {/* Compliant */}
-              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-success-500 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
+              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Compliant</p>
                     <p className="text-3xl font-bold text-success-600">{stats.compliant}</p>
                   </div>
                   <div className="bg-success-100 rounded-full p-4">
-                    <span className="text-3xl">✅</span>
+                    <HiCheckCircle className="w-8 h-8 text-success-600" />
                   </div>
                 </div>
               </div>
 
               {/* Partial */}
-              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-warning-500 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
+              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Partial</p>
                     <p className="text-3xl font-bold text-warning-600">{stats.partial}</p>
                   </div>
                   <div className="bg-warning-100 rounded-full p-4">
-                    <span className="text-3xl">⚠️</span>
+                    <HiExclamationTriangle className="w-8 h-8 text-warning-600" />
                   </div>
                 </div>
               </div>
 
               {/* Non-Compliant */}
-              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-danger-500 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
+              <div className="bg-white rounded-xl shadow-md p-6 border-l-4 hover:shadow-lg transition duration-200 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Non-Compliant</p>
                     <p className="text-3xl font-bold text-danger-600">{stats.non_compliant}</p>
                   </div>
                   <div className="bg-danger-100 rounded-full p-4">
-                    <span className="text-3xl">❌</span>
+                    <XCircle className="w-8 h-8 text-danger-600" />
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Average Score */}
-            <div className="bg-gradient-to-r from-primary-500 to-purple-600 rounded-xl shadow-lg p-6 mb-8 text-white">
+            <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 rounded-xl shadow-lg p-6 mb-8 text-white">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-primary-100 text-sm font-medium mb-1">Average Compliance Score</p>
-                  <p className="text-5xl font-bold">{stats.average_score}%</p>
+                  <p className="text-gray-300 text-sm font-medium mb-1">Average Compliance Score</p>
+                  <p className="text-5xl font-bold">
+                    {stats.average_compliance_score != null 
+                      ? `${Math.round(stats.average_compliance_score)}%` 
+                      : 'N/A'}
+                  </p>
                 </div>
-                <div className="text-6xl">🎯</div>
+                <Target className="w-16 h-16 text-white/80" />
               </div>
               <div className="bg-white/20 rounded-full h-3 overflow-hidden">
                 <div
                   className="bg-white h-full rounded-full transition-all duration-500"
-                  style={{ width: `${stats.average_score}%` }}
+                  style={{ width: `${stats.average_compliance_score || 0}%` }}
                 ></div>
               </div>
+              {stats.total_analyses > 0 && (
+                <p className="text-gray-300 text-xs mt-3 text-center">
+                  Based on {stats.total_analyses} {stats.total_analyses === 1 ? 'analysis' : 'analyses'}
+                </p>
+              )}
             </div>
           </>
         )}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* New Analysis */}
           <Link
             to="/analyze"
             className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-200 transform hover:-translate-y-1 group"
           >
-            <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
-              🔍
+            <div className="mb-3">
+              <Search className="w-12 h-12 text-primary-500" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">New Analysis</h3>
             <p className="text-gray-600 text-sm">
@@ -166,26 +182,28 @@ function Dashboard() {
             </p>
           </Link>
 
-          <Link
-            to="/history"
+          {/* View History - Scrolls to recent analyses section */}
+          <a
+            href="#recent-analyses"
             className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-200 transform hover:-translate-y-1 group"
           >
-            <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
-              📁
+            <div className="mb-3">
+              <Folder className="w-12 h-12 text-primary-500" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">View History</h3>
             <p className="text-gray-600 text-sm">
-              Browse all your past analyses
+              Browse all your past analyses below
             </p>
-          </Link>
+          </a>
 
           <Link
             to="/statistics"
             className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-200 transform hover:-translate-y-1 group"
           >
-            <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
-              📈
+             <div className="mb-3">
+              <TrendingUp className="w-12 h-12 text-primary-500" />
             </div>
+
             <h3 className="text-xl font-bold text-gray-900 mb-2">Statistics</h3>
             <p className="text-gray-600 text-sm">
               View detailed analytics and trends
@@ -194,20 +212,14 @@ function Dashboard() {
         </div>
 
         {/* Recent Analyses */}
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div id="recent-analyses" className="bg-white rounded-xl shadow-md p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Recent Analyses</h2>
-            <Link
-              to="/history"
-              className="text-primary-500 hover:text-primary-600 font-medium text-sm transition duration-200"
-            >
-              View All →
-            </Link>
           </div>
 
           {recentAnalyses.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">📊</div>
+              <HiChartBar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 No analyses yet
               </h3>
@@ -216,9 +228,10 @@ function Dashboard() {
               </p>
               <Link
                 to="/analyze"
-                className="inline-block bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
+                className="inline-flex items-center space-x-2 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 shadow-lg"
               >
-                Create First Analysis
+                <Search className="w-5 h-5" />
+                <span>Create First Analysis</span>
               </Link>
             </div>
           ) : (
@@ -227,15 +240,18 @@ function Dashboard() {
                 <Link
                   key={analysis.id}
                   to={`/analysis/${analysis.id}`}
-                  className="block border border-gray-200 rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition duration-200"
+                  className="block border border-gray-200 rounded-lg p-4 hover:border-slate-400 hover:shadow-md transition duration-200"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4 flex-1">
                       {analysis.annotated_image_url && (
                         <img
-                          src={analysis.annotated_image_url}
+                          src={`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}${analysis.annotated_image_url}`}
                           alt={analysis.name}
                           className="w-20 h-20 object-cover rounded-lg"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
                         />
                       )}
                       <div className="flex-1">
@@ -249,12 +265,12 @@ function Dashboard() {
                     </div>
                     <div className="text-right ml-4">
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getComplianceClasses(
+                        className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium border ${getComplianceClasses(
                           analysis.compliance_status
                         )}`}
                       >
-                        {getStatusIcon(analysis.compliance_status)}{' '}
-                        {analysis.compliance_status.replace('_', ' ')}
+                        {getStatusIcon(analysis.compliance_status)}
+                        <span>{analysis.compliance_status.replace('_', ' ')}</span>
                       </span>
                       <p className="text-2xl font-bold text-gray-900 mt-2">
                         {analysis.compliance_score}%

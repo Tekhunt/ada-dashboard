@@ -1,6 +1,5 @@
 // src/services/api.js
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
-console.log('API URL:', API_URL);
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -23,10 +22,7 @@ class ApiService {
       config.headers['Content-Type'] = 'application/json';
     }
 
-    try {
-      console.log('API Request:', endpoint, config);
-      console.log('Full URL:', `${API_URL}${endpoint}`);
-      
+    try {      
       const response = await fetch(`${API_URL}${endpoint}`, config);
 
       // Handle token refresh if unauthorized
@@ -39,6 +35,11 @@ class ApiService {
         }
       }
 
+      // ✅ Handle 204 No Content (successful DELETE with no body)
+      if (response.status === 204) {
+        return { success: true, message: 'Operation successful' };
+      }
+
       if (!response.ok) {
         const error = await response.json().catch(() => ({ 
           detail: `HTTP ${response.status}: ${response.statusText}` 
@@ -46,7 +47,14 @@ class ApiService {
         throw new Error(error.detail || error.error || 'Request failed');
       }
 
-      return await response.json();
+      // ✅ Check if there's JSON content to parse
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json();
+      }
+
+      // ✅ No JSON content, return success
+      return { success: true };
     } catch (error) {
       console.error('API Error:', error);
       throw error;
