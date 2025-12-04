@@ -24,14 +24,12 @@ function Navbar() {
     : userData?.email?.split('@')[0] || 'User';
 
   return (
-    <nav className="bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 shadow-lg sticky top-0 z-50">
+    // <nav className="bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 shadow-lg sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 shadow-lg sticky top-0 z-50 py-6 mb-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center space-x-3 group">
-            {/* <span className="text-4xl transform group-hover:scale-110 transition-transform duration-200">
-              🏛️
-            </span> */}
             <div className="transform group-hover:scale-110 transition-transform duration-200">
               <img 
                 src={ontarioLogo} 
@@ -46,7 +44,7 @@ function Navbar() {
               {/* <span className="text-4xl hidden">🏛️</span> */}
             </div>
             <div className="hidden sm:block">
-              <span className="text-white text-xl font-bold">Ontario ADA</span>
+              <span className="text-white text-xl font-bold">Ontario AODA</span>
               <span className="text-gray-300 text-sm block">Compliance Analyzer</span>
             </div>
           </Link>

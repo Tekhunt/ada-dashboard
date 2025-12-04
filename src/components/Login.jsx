@@ -45,10 +45,10 @@ const Login = () => {
         <div className="text-center mb-8">
           <div className="inline-block text-7xl mb-4">🏛️</div>
           <h1 className="text-4xl font-bold text-white mb-2">
-            Welcome Back
+            Creating a more inclusive Ontario starts here— one analysis at a time.
           </h1>
           <p className="text-primary-100">
-            Ontario ADA Compliance Analyzer
+            Ontario AODA Compliance Analyzer
           </p>
         </div>
 

@@ -171,7 +171,7 @@ function Statistics() {
             Detailed Statistics
           </h1>
           <p className="text-gray-600">
-            Comprehensive analytics and trends for your compliance analyses
+            CComprehensive analytics and trends for your accessibility assessments
           </p>
         </div>
 
@@ -358,10 +358,10 @@ function Statistics() {
             </div>
             <div>
               <p className="text-gray-300 text-sm mb-1">Total Analyzed</p>
-              <p className="text-2xl font-bold">{stats.total_analyses} {stats.total_analyses === 1 ? 'Location' : 'Locations'}</p>
+              <p className="text-2xl font-bold">{stats.total_analyses} {stats.total_analyses === 1 ? 'Diagram' : 'Diagrams'}</p>
             </div>
             <div>
-              <p className="text-gray-300 text-sm mb-1">Success Rate</p>
+              <p className="text-gray-300 text-sm mb-1">Compliance Rate</p>
               <p className="text-2xl font-bold">{complianceRate}%</p>
             </div>
           </div>

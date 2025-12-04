@@ -7,10 +7,23 @@ import { XCircle, Target, Search, Folder, TrendingUp } from "lucide-react";
 import { HiExclamationTriangle, HiCheckCircle, HiChartBar } from "react-icons/hi2";
 
 function Dashboard() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentAnalyses, setRecentAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { user, logout } = useAuth();
+
+  // 🔍 Debug - log user object
+  useEffect(() => {
+  }, [user]);
+
+  const userData = Array.isArray(user) ? user[0] : user;
+
+  const displayName = userData?.first_name 
+    ? `${userData.first_name}`.trim()
+    : userData?.email?.split('@')[0] || 'User';
+
 
   useEffect(() => {
     loadDashboardData();
@@ -74,12 +87,16 @@ function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, {user?.email}! 👋
+            Welcome back, {displayName}
           </h1>
-          <p className="text-gray-600">
-            Here's an overview of your washroom compliance analyses
+          <p className="text-gray-700">
+            Building a more accessible Ontario— one analysis at a time.
+          </p>
+          <p className="text-gray-700">
+            Here’s your washroom compliance overview.
           </p>
         </div>
+
 
         {/* Statistics Cards */}
         {stats && (

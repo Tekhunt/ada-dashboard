@@ -1,6 +1,7 @@
 // src/components/Footer.jsx - Cool Classic Gradient
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ontarioLogo from '../assets/ontario-logo.jpg';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,8 +13,10 @@ function Footer() {
           {/* About Section */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <span className="text-4xl">🏛️</span>
-              <h3 className="text-2xl font-bold">Ontario ADA Analyzer</h3>
+              <span className="text-4xl">
+                <img src={ontarioLogo} alt="Ontario AODA Analyzer Logo" className="w-10 h-10" />
+              </span>
+              <h3 className="text-2xl font-bold">Ontario AODA Analyzer</h3>
             </div>
             <p className="text-gray-300 mb-4 leading-relaxed">
               AI-powered washroom accessibility compliance checker for Ontario Building Code. 
@@ -125,7 +128,7 @@ function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="text-gray-300 text-sm">
-            © {currentYear} Ontario ADA Compliance Analyzer. All rights reserved.
+            © {currentYear} Ontario AODA Compliance Analyzer. All rights reserved.
           </div>
           
           {/* Tech Stack Badge */}

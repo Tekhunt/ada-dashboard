@@ -63,7 +63,7 @@ const Register = () => {
             Create Account
           </h1>
           <p className="text-primary-100">
-            Join Ontario ADA Compliance Analyzer
+            Join Ontario AODA Compliance Analyzer
           </p>
         </div>
 
