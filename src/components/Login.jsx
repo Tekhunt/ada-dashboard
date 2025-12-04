@@ -44,8 +44,8 @@ const Login = () => {
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className="inline-block text-7xl mb-4">🏛️</div>
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Creating a more inclusive Ontario starts here— one analysis at a time.
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Creating a more inclusive Ontario starts here
           </h1>
           <p className="text-primary-100">
             Ontario AODA Compliance Analyzer
